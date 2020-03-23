@@ -52,4 +52,51 @@ $(document).ready(function(){
             $('.overlay, #order').fadeIn('slow');
         });
     });
+
+    //validate
+    function valideForms(form){
+        $(form).validate({
+            rules: {
+                name: "required",
+                phone: "required",
+                email: {
+                    required: true,
+                    email: true
+                },
+            },
+            messages: {
+                name: "Введите имя",
+                phone: "Введите номер телефона",
+                email: {
+                  required: "Введите почту",
+                  email: "Неправильно введен адрес почты"
+                }
+            }
+        });
+    };
+    valideForms('#consultation-form');
+    valideForms('#order form');
+    valideForms('#consultation form');
+    
+
+    //mask
+    $('input[name=phone]').mask("+7 (999) 999-99-99");
+
+
+    //mailer
+    $('form').submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "mailer/smart.php",
+            data: $(this).serialize()
+        }).done(function() {
+            $(this).find("input").val("");
+            $('#consultation, #order').fadeOut();
+            $('.overlay, #thanks').fadeIn('slow');
+            $('form').trigger('reset');
+        });
+        return false;
+    });
+
   });
